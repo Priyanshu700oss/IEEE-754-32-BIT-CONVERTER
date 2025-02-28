@@ -1,0 +1,48 @@
+Source code 
+
+#include <stdio.h>
+#include <stdint.h>
+
+// Union to interpret the bits of a float as an unsigned 32-bit integer
+typedef union {
+    float f;
+    uint32_t u;
+} FloatUnion;
+
+// Function to print the IEEE 754 representation
+void printIEEE754(float number) {
+    FloatUnion fu;
+    fu.f = number;
+
+    // Extract sign, exponent, and mantissa
+    unsigned int sign = (fu.u >> 31) & 0x1;
+    unsigned int exponent = (fu.u >> 23) & 0xFF;
+    unsigned int mantissa = fu.u & 0x7FFFFF;
+
+    printf("Sign: %u\n", sign);
+    printf("Exponent: %u (0x%02X)\n", exponent, exponent);
+    printf("Mantissa: %u (0x%06X)\n", mantissa, mantissa);
+
+    // Print binary representation
+    printf("Binary: ");
+    for (int i = 31; i >= 0; i--) {
+        printf("%u", (fu.u >> i) & 0x1);
+        if (i % 4 == 0) printf(" ");
+    }
+    printf("\n");
+}
+
+int main() {
+    float number;
+
+    printf("Enter a decimal number: ");
+    if (scanf("%f", &number) != 1) {
+        printf("Invalid input.\n");
+        return 1;
+    }
+
+    printf("IEEE 754 representation of %f:\n", number);
+    printIEEE754(number);
+
+    return 0;
+}
